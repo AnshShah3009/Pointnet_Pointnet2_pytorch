@@ -7,13 +7,30 @@ import os
 import numpy as np
 import warnings
 import pickle
+import argparse
 
 from tqdm import tqdm
 from torch.utils.data import Dataset
+import torch
 
 warnings.filterwarnings('ignore')
 
+# function to parse arguments
+def parse_args():
+    '''PARAMETERS'''
+    parser = argparse.ArgumentParser('Testing')
+    parser.add_argument('--use_cpu', action='store_true', default=False, help='use cpu mode')
+    parser.add_argument('--gpu', type=str, default='0', help='specify gpu device')
+    parser.add_argument('--batch_size', type=int, default=24, help='batch size in training')
+    parser.add_argument('--num_category', default=40, type=int, choices=[10, 40],  help='training on ModelNet10/40')
+    parser.add_argument('--num_point', type=int, default=1024, help='Point Number')
+    parser.add_argument('--log_dir', type=str, required=False, help='Experiment root')
+    parser.add_argument('--use_normals', action='store_true', default=False, help='use normals')
+    parser.add_argument('--use_uniform_sample', action='store_true', default=False, help='use uniform sampiling')
+    parser.add_argument('--num_votes', type=int, default=3, help='Aggregate classification scores with voting')
+    return parser.parse_args()
 
+# function to normalize pcd size in x,y,z
 def pc_normalize(pc):
     centroid = np.mean(pc, axis=0)
     pc = pc - centroid
@@ -21,7 +38,7 @@ def pc_normalize(pc):
     pc = pc / m
     return pc
 
-
+# function to sample farthest points by randomly picking points
 def farthest_point_sample(point, npoint):
     """
     Input:
@@ -45,7 +62,7 @@ def farthest_point_sample(point, npoint):
     point = point[centroids.astype(np.int32)]
     return point
 
-
+# class to load ModelNet data
 class ModelNetDataLoader(Dataset):
     def __init__(self, root, args, split='train', process_data=False):
         self.root = root
@@ -137,9 +154,9 @@ class ModelNetDataLoader(Dataset):
 
 
 if __name__ == '__main__':
-    import torch
-
-    data = ModelNetDataLoader('/data/modelnet40_normal_resampled/', split='train')
+    args = parse_args()
+    print(args)
+    data = ModelNetDataLoader('/data/modelnet40_normal_resampled/', args=args, split='train')
     DataLoader = torch.utils.data.DataLoader(data, batch_size=12, shuffle=True)
     for point, label in DataLoader:
         print(point.shape)
