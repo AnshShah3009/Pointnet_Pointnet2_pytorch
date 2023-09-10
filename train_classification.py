@@ -23,6 +23,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = BASE_DIR
 sys.path.append(os.path.join(ROOT_DIR, 'models'))
 
+# function to parse arguments
 def parse_args():
     '''PARAMETERS'''
     parser = argparse.ArgumentParser('training')
@@ -48,7 +49,7 @@ def inplace_relu(m):
     if classname.find('ReLU') != -1:
         m.inplace=True
 
-
+# function to get output from model
 def test(model, loader, num_class=40):
     mean_correct = []
     class_acc = np.zeros((num_class, 3))

@@ -28,6 +28,7 @@ def parse_args():
     parser.add_argument('--use_normals', action='store_true', default=False, help='use normals')
     parser.add_argument('--use_uniform_sample', action='store_true', default=False, help='use uniform sampiling')
     parser.add_argument('--num_votes', type=int, default=3, help='Aggregate classification scores with voting')
+    parser.add_argument('--process_data', action='store_true', default=False, help='save data offline')
     return parser.parse_args()
 
 # function to normalize pcd size in x,y,z
