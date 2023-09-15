@@ -4,7 +4,7 @@ from pointnet2_utils import PointNetSetAbstractionMsg, PointNetSetAbstraction
 
 
 class get_model(nn.Module):
-    def __init__(self,num_class,normal_channel=True):
+    def __init__(self,num_class, normal_channel=True):
         super(get_model, self).__init__()
         in_channel = 3 if normal_channel else 0
         self.normal_channel = normal_channel
@@ -47,5 +47,3 @@ class get_loss(nn.Module):
         total_loss = F.nll_loss(pred, target)
 
         return total_loss
-
-
